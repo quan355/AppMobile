@@ -17,6 +17,7 @@
     "@react-navigation/stack": "^7.3.1",
     "expo": "~53.0.6",
     "expo-status-bar": "~2.2.3",
+    "native-image": "^0.7.0",
     "react": "19.0.0",
     "react-native": "0.79.2",
     "react-native-gesture-handler": "^2.25.0",
