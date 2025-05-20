@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { trendingRecipes } from '../recipesData';
+import { trendingRecipes,recentRecipes } from '../recipesData';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -9,11 +9,12 @@ export default function RecipeListByCategoryScreen({ route }) {
   const { category } = route.params;
   const navigation = useNavigation();
 
-  const filtered = trendingRecipes.filter(
-    (r) =>
-      r.category &&
-      r.category.trim().toLowerCase() === category.trim().toLowerCase()
-  );
+  const allRecipes = [...trendingRecipes, ...recentRecipes]; // Kết hợp cả hai mảng
+const filtered = allRecipes.filter(
+  (r) =>
+    r.category && // Kiểm tra category
+    r.category.trim().toLowerCase() === category.trim().toLowerCase() // So sánh
+);
 
   return (
     <View style={styles.container}>
