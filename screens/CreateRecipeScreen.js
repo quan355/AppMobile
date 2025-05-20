@@ -17,8 +17,10 @@ import { addRecipe, defaultRecipeImage } from '../recipesData.js';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { addNotification } from './NotificationsScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function CreateRecipeScreen() {
+  const [category, setCategory] = useState('');
   const navigation = useNavigation();
   const [recipeTitle, setRecipeTitle] = useState('');
   const [serves, setServes] = useState('01');
@@ -44,23 +46,27 @@ export default function CreateRecipeScreen() {
     setCookTime(numericText);
   };
 
-  const selectImage = () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 1,
-      maxWidth: 1024,
-      maxHeight: 1024,
-    };
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log('Người dùng hủy chọn ảnh');
-      } else if (response.errorCode) {
-        console.log('Lỗi ImagePicker: ', response.errorMessage);
-      } else if (response.assets && response.assets.length > 0) {
-        setSelectedImage({ uri: response.assets[0].uri });
-      }
-    });
-  };
+  const selectImage = async () => {
+  // 1. Xin quyền truy cập
+  const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!permissionResult.granted) {
+    Alert.alert("Quyền bị từ chối", "Ứng dụng cần quyền truy cập thư viện ảnh.");
+    return;
+  }
+
+  // 2. Mở thư viện ảnh
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    quality: 1,
+  });
+
+  // 3. Lưu ảnh đã chọn
+  if (!result.canceled && result.assets && result.assets.length > 0) {
+    setSelectedImage({ uri: result.assets[0].uri });
+  }
+};
+
 
   const addIngredient = () => {
     if (newIngredient.name && newIngredient.quantity) {
@@ -84,11 +90,15 @@ export default function CreateRecipeScreen() {
     setInstructions(instructions.filter((_, i) => i !== index));
   };
 
+
   const saveRecipe = async () => {
     if (!recipeTitle || ingredients.length === 0) {
       Alert.alert('Lỗi', 'Vui lòng nhập tiêu đề và ít nhất một nguyên liệu.');
       return;
-    }
+    } if (!category.trim()) {
+        Alert.alert('Lỗi', 'Vui lòng nhập danh mục món ăn.');
+        return;
+      }
 
     try {
       const userData = await AsyncStorage.getItem('userData');
@@ -96,13 +106,16 @@ export default function CreateRecipeScreen() {
       console.log('Username từ AsyncStorage:', username);
 
       const newRecipe = {
-        title: recipeTitle,
-        cookTime: displayCookTime(), // Lưu giá trị kèm đơn vị "phút"
-        ingredients,
-        instructions: instructions.filter((instr) => instr.trim()),
-        author: `Bởi ${username}`,
-        image: selectedImage,
-      };
+      id: `${Date.now()}`, // Đảm bảo có id
+      title: recipeTitle,
+      cookTime: displayCookTime(),
+      ingredients,
+      instructions: instructions.filter((instr) => instr.trim()),
+      author: `Bởi ${username}`,
+      image: selectedImage,
+      category: category.trim(),
+    };
+
 
       console.log('Bắt đầu lưu công thức:', newRecipe);
       if (typeof addRecipe !== 'function') {
@@ -125,7 +138,9 @@ export default function CreateRecipeScreen() {
           notifications: newNotifications,
           newRecipeAdded: true,
         });
+        
       });
+
     } catch (error) {
       console.error('Lỗi khi lưu công thức:', error);
       Alert.alert('Lỗi', 'Không thể lưu công thức. Vui lòng thử lại.');
@@ -175,6 +190,14 @@ export default function CreateRecipeScreen() {
             value={recipeTitle}
             onChangeText={setRecipeTitle}
             placeholder="Nhập tiêu đề công thức"
+            returnKeyType="done"
+          />
+          <Text style={styles.label}>Danh mục món ăn</Text>
+          <TextInput
+            style={styles.input}
+            value={category}
+            onChangeText={setCategory}
+            placeholder="VD: Món Hàn, Tráng miệng..."
             returnKeyType="done"
           />
           <View style={styles.counterRow}>

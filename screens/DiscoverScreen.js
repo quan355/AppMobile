@@ -1,18 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
-import { trendingRecipes, recentRecipes } from '../recipesData';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { trendingRecipes, recentRecipes, categoryNames, popularCategories } from '../recipesData';
 
 // Get screen width for dynamic sizing
 const { width } = Dimensions.get('window');
 
-// Combine trending and recent recipes for saved recipes
-const savedRecipes = [...trendingRecipes, ...recentRecipes];
-
 export default function DiscoverScreen() {
   const [activeTab, setActiveTab] = useState('Ảnh');
+  const [savedRecipes, setSavedRecipes] = useState([...trendingRecipes, ...recentRecipes]);
   const navigation = useNavigation();
+
+  const refreshData = () => {
+    console.log('Làm mới DiscoverScreen khi nhấn tab');
+    const updatedSavedRecipes = [...trendingRecipes, ...recentRecipes];
+    setSavedRecipes(updatedSavedRecipes);
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('tabPress', (e) => {
+      if (navigation.isFocused()) {
+        e.preventDefault();
+        refreshData();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('Làm mới DiscoverScreen khi focus');
+      const updatedSavedRecipes = [...trendingRecipes, ...recentRecipes];
+      setSavedRecipes(updatedSavedRecipes);
+    }, [])
+  );
 
   return (
     <View style={styles.container}>

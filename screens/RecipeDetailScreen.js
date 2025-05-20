@@ -18,8 +18,16 @@ export default function RecipeDetailScreen({ route }) {
           >
             <Icon name="arrow-back" size={24} color="#000" />
           </TouchableOpacity>
-          <Text style={styles.title}>{recipe.title}</Text>
+
+           <View style={{ flex: 1 }}>
+            <Text style={styles.title}>{recipe.title}</Text>
+
+            {recipe.category && (
+              <Text style={styles.category}>{recipe.category}</Text>
+            )}
+          </View>
         </View>
+
 
         {/* Image */}
         <Image source={recipe.image} style={styles.recipeImage} />
