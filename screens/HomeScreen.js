@@ -108,8 +108,14 @@ export default function HomeScreen() {
             </View>
             {/* Popular Category Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Danh mục phổ biến</Text>
+              <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Danh mục món ăn </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('CategoryListScreen')}>
+                  <Text style={styles.seeAll}>Xem tất cả →</Text>
+              </TouchableOpacity>
+              </View>
               {/* Part 1: Text Categories */}
+
               <FlatList
                 data={categoryNames}
                 horizontal

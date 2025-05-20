@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import CategoryListScreen from './screens/CategoryListScreen';
+
 
 
 
@@ -107,7 +109,35 @@ function HomeStack() {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-       <Stack.Screen
+      <Stack.Screen
+        name="DiscoverMain"
+        component={DiscoverScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RecipeDetail"
+        component={RecipeDetailScreen}
+        options={{ headerShown: false, tabBarStyle: { display: 'none' } }}
+      />
+      <Stack.Screen
+        name="CategoryListScreen"
+        component={CategoryListScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RecipeListByCategoryScreen"
+        component={RecipeListByCategoryScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+
+function MainStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
         name="DiscoverMain"
         component={DiscoverScreen}
         options={{ headerShown: false }}
@@ -117,12 +147,18 @@ function HomeStack() {
         component={RecipeDetailScreen}
         options={{
           headerShown: false,
-          tabBarStyle: { display: 'none' }, // Ẩn thanh tab khi ở RecipeDetail
+          tabBarVisible: false,
         }}
+      />
+      <Stack.Screen
+        name="CategoryListScreen"
+        component={CategoryListScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
 }
+
 
 // Stack Navigator cho DiscoverScreen
 function DiscoverStack() {

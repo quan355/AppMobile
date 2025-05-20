@@ -97,7 +97,7 @@ const selectImage = async () => {
       console.log('Username từ AsyncStorage:', username);
 
 const newRecipe = {
-  title: recipeTitle,
+  title: recipeTitle,   
   cookTime,
   ingredients,
   instructions: instructions.filter((instr) => instr.trim()),

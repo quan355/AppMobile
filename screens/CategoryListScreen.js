@@ -35,7 +35,7 @@ export default function CategoryListScreen({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => navigation.navigate('RecipeListByCategory', { category: item })}
+            onPress={() => navigation.navigate('RecipeListByCategoryScreen', { category: item })}
           >
             <Text style={styles.text}>{item}</Text>
           </TouchableOpacity>
