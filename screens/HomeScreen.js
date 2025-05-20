@@ -24,6 +24,12 @@ export default function HomeScreen() {
     setSearchResults(filteredRecipes);
   };
 
+  // Hàm xử lý khi nhấn nút (ví dụ: lọc hoặc xóa tìm kiếm)
+  const handleFilterPress = () => {
+    navigation.navigate('CategoryList');
+    // Thêm logic lọc hoặc hành động khác nếu cần
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -32,7 +38,7 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <Text style={styles.header}>Tìm công thức nấu ăn ngon nhất</Text>
-        {/* Search Bar */}
+        {/* Search Bar với nút */}
         <View style={styles.searchContainer}>
           <Icon name="search" size={20} color="#6b7280" style={styles.searchIcon} />
           <TextInput
@@ -41,6 +47,9 @@ export default function HomeScreen() {
             value={searchQuery}
             onChangeText={handleSearch}
           />
+          <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
+            <Icon name="filter-list" size={20} color="#ff4444" />
+          </TouchableOpacity>
         </View>
 
         {searchResults.length > 0 ? (
@@ -48,7 +57,7 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>Kết quả tìm kiếm</Text>
             <FlatList
               data={searchResults}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.id || `${item.title}_${Math.random()}`}
               scrollEnabled={false}
               renderItem={({ item }) => (
                 <TouchableOpacity
@@ -75,7 +84,14 @@ export default function HomeScreen() {
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>Đang thịnh hành 🔥</Text>
                 <View style={styles.sectionHeaderActions}>
-                  <TouchableOpacity onPress={() => navigation.navigate('DiscoverMain')}>
+                  <TouchableOpacity 
+                    onPress={() =>
+                      navigation.navigate('AllRecipes', {
+                        recipes: trendingRecipes,
+                        title: 'Công thức thịnh hành',
+                      })
+                    }
+                  >
                     <Text style={styles.seeAll}>Xem tất cả →</Text>
                   </TouchableOpacity>
                 </View>
@@ -84,7 +100,7 @@ export default function HomeScreen() {
                 data={trendingRecipes}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id || `${item.title}_${Math.random()}`}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={styles.trendingCard}
@@ -113,7 +129,7 @@ export default function HomeScreen() {
                 data={categoryNames}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item}
+                keyExtractor={(item) => item.id || `${item.title}_${Math.random()}`}
                 renderItem={({ item }) => (
                   <TouchableOpacity style={styles.textCategoryCard}>
                     <Text style={styles.textCategory}>{item}</Text>
@@ -126,7 +142,7 @@ export default function HomeScreen() {
                 data={popularCategories}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id || `${item.title}_${Math.random()}`}
                 renderItem={({ item }) => (
                   <TouchableOpacity style={styles.categoryCard}>
                     <Image source={item.image} style={styles.categoryImage} />
@@ -143,14 +159,21 @@ export default function HomeScreen() {
               <View style={styles.sectionHeader}>
                 <Text style={styles.sectionTitle}>Công thức gần đây</Text>
                 <View style={styles.sectionHeaderActions}>
-                  <TouchableOpacity onPress={() => navigation.navigate('DiscoverMain')}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate('AllRecipes', {
+                        recipes: recentRecipes,
+                        title: 'Công thức gần đây',
+                      })
+                    }
+                  >
                     <Text style={styles.seeAll}>Xem tất cả →</Text>
                   </TouchableOpacity>
                 </View>
               </View>
               <FlatList
                 data={recentRecipes}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id || `${item.title}_${Math.random()}`}
                 scrollEnabled={false}
                 renderItem={({ item }) => (
                   <TouchableOpacity
@@ -210,6 +233,10 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
   },
+  filterButton: {
+    padding: 12,
+    marginRight: 10,
+  },
   section: {
     marginBottom: 16,
   },
@@ -221,7 +248,7 @@ const styles = StyleSheet.create({
   },
   sectionHeaderActions: {
     flexDirection: 'row',
-    alignItems: 'center ',
+    alignItems: 'center',
   },
   sectionTitle: {
     fontSize: 20,

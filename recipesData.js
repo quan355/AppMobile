@@ -1,3 +1,4 @@
+// recipesData.js
 const trendingRecipes = [
   {
     id: '1',
@@ -6,6 +7,7 @@ const trendingRecipes = [
     rating: 4.5,
     time: '15:10',
     author: 'Bởi Niki Samantha',
+    category: 'Món Nhật', // Thêm category
     ingredients: [
       'Cơm sushi: 300g',
       'Cá hồi tươi: 200g',
@@ -28,6 +30,7 @@ const trendingRecipes = [
     rating: 4.7,
     time: '10:30',
     author: 'Bởi John Doe',
+    category: 'Món Ý', // Thêm category
     ingredients: [
       'Bột mì: 500g',
       'Men nở: 7g',
@@ -53,6 +56,7 @@ let recentRecipes = [
     rating: 4.8,
     time: '45:00',
     author: 'Bởi Anna Nguyễn',
+    category: 'Món Việt', // Thêm category
     ingredients: [
       'Xương bò: 1kg',
       'Thịt bò: 300g',
@@ -75,6 +79,7 @@ let recentRecipes = [
     rating: 4.3,
     time: '15:00',
     author: 'Bởi Minh Trần',
+    category: 'Món Việt', // Thêm category
     ingredients: [
       'Bánh mì: 1 ổ',
       'Thịt heo quay: 100g',
@@ -96,6 +101,7 @@ let recentRecipes = [
     rating: 4.6,
     time: '20:00',
     author: 'Bởi Linh Phạm',
+    category: 'Món Việt', // Thêm category
     ingredients: [
       'Bánh tráng: 10 lá',
       'Tôm: 200g',
@@ -113,7 +119,7 @@ let recentRecipes = [
   },
 ];
 
-const categoryNames = ['Salad', 'Bữa sáng', 'Khai vị', 'Mì', 'Bữa trưa'];
+const categoryNames = ['Salad', 'Bữa sáng', 'Khai vị', 'Mì', 'Bữa trưa', 'Món Việt', 'Món Nhật', 'Món Ý'];
 
 const popularCategories = [
   {
@@ -153,16 +159,30 @@ const emitChange = () => {
 
 const addRecipe = (newRecipe) => {
   console.log('Thêm công thức mới:', newRecipe);
-  recentRecipes.unshift({
-    id: `${Date.now()}`,
-    title: newRecipe.title,
+  const recipeId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`; // Tạo id duy nhất
+  const newRecipeData = {
+    id: recipeId,
+    title: newRecipe.title || 'Công thức không tên',
     image: newRecipe.image || defaultRecipeImage,
-    rating: 4.0,
-    time: newRecipe.cookTime,
+    rating: newRecipe.rating || 4.0,
+    time: newRecipe.cookTime || 'Không xác định',
     author: newRecipe.author || 'Bởi Người dùng',
-    ingredients: newRecipe.ingredients.map((item) => `${item.name}: ${item.quantity}`),
-    instructions: newRecipe.instructions || ['Chưa có hướng dẫn.'],
-  });
+    category: newRecipe.category || 'Không rõ',
+    ingredients: newRecipe.ingredients
+      ? newRecipe.ingredients.map((item) => `${item.name}: ${item.quantity}`)
+      : ['Chưa có nguyên liệu'],
+    instructions: newRecipe.instructions && newRecipe.instructions.length > 0
+      ? newRecipe.instructions
+      : ['Chưa có hướng dẫn.'],
+  };
+
+  recentRecipes.unshift(newRecipeData);
+  
+  // Thêm vào trendingRecipes nếu phù hợp (ví dụ: rating cao)
+  if (newRecipeData.rating > 4.0) {
+    trendingRecipes.push(newRecipeData);
+  }
+
   console.log('Danh sách công thức mới:', recentRecipes);
   emitChange();
 };
@@ -170,6 +190,7 @@ const addRecipe = (newRecipe) => {
 const removeRecipe = (recipeId) => {
   console.log('Xóa công thức với ID:', recipeId);
   recentRecipes = recentRecipes.filter((recipe) => recipe.id !== recipeId);
+  trendingRecipes = trendingRecipes.filter((recipe) => recipe.id !== recipeId); // Đồng bộ xóa ở trendingRecipes
   console.log('Danh sách công thức sau khi xóa:', recentRecipes);
   emitChange();
 };

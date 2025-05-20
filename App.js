@@ -12,11 +12,14 @@ import SignUpScreen from './screens/SignUpScreen';
 
 // Screens sau đăng nhập
 import HomeScreen from './screens/HomeScreen';
+import AllRecipesScreen from './screens/AllRecipesScreen';
 import DiscoverScreen from './screens/DiscoverScreen';
 import RecipeDetailScreen from './screens/RecipeDetailScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
 import ProfilepageScreen from './screens/ProfilepageScreen';
 import CreateRecipeScreen from './screens/CreateRecipeScreen';
+import CategoryListScreen from './screens/CategoryListScreen';
+import RecipeListByCategoryScreen from './screens/RecipeListByCategoryScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -104,10 +107,10 @@ function HomeStack() {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-       <Stack.Screen
-        name="DiscoverMain"
-        component={DiscoverScreen}
-        options={{ headerShown: false }}
+      <Stack.Screen 
+        name="AllRecipes" 
+        component={AllRecipesScreen} 
+        options={{ headerShown: false }}  
       />
       <Stack.Screen
         name="RecipeDetail"
@@ -117,9 +120,21 @@ function HomeStack() {
           tabBarStyle: { display: 'none' }, // Ẩn thanh tab khi ở RecipeDetail
         }}
       />
+      <Stack.Screen
+        name="CategoryList"
+        component={CategoryListScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RecipeListByCategory"
+        component={RecipeListByCategoryScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
+
+
 
 // Stack Navigator cho DiscoverScreen
 function DiscoverStack() {
@@ -130,6 +145,7 @@ function DiscoverStack() {
         component={DiscoverScreen}
         options={{ headerShown: false }}
       />
+      
       <Stack.Screen
         name="RecipeDetail"
         component={RecipeDetailScreen}
@@ -154,6 +170,7 @@ function CreateRecipeStack() {
           tabBarVisible: false,
         }}
       />
+      
     </Stack.Navigator>
   );
 }
@@ -167,6 +184,7 @@ function NotificationsStack() {
         component={NotificationsScreen}
         options={{ headerShown: false }}
       />
+      
     </Stack.Navigator>
   );
 }
